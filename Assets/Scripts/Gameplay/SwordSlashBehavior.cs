@@ -1,10 +1,11 @@
 using UnityEngine;
 
+[RequireComponent(typeof(Rigidbody))]
 public class SwordSlashBehavior : MonoBehaviour
 {
     public GameObject Owner;
     private float _duration = 0.75f;
-    private int _damage;
+    private int _hitsLeft;
     private Rigidbody _rigidbody;
 
     public Rigidbody Rigidbody
@@ -12,10 +13,10 @@ public class SwordSlashBehavior : MonoBehaviour
         get { return _rigidbody; }
     }
 
-    public int Damage
+    public int Pierce
     {
-        get { return _damage; }
-        set { _damage = value; }
+        get { return _hitsLeft; }
+        set { _hitsLeft = value; }
     }
 
     public float Duration
@@ -45,11 +46,31 @@ public class SwordSlashBehavior : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        //If the object has a HealthBehavior
-        HealthBehavior otherHealthBehavior = other.GetComponent<HealthBehavior>();
-        if (otherHealthBehavior)
-            //If the object this collided with is not the owner, deal damage to it
-            if (other != Owner)
-                other.GetComponent<HealthBehavior>().TakeDamage(_damage);
+        //Make sure what was hit was not the owner
+        if (other.gameObject == Owner)
+            return;
+
+        //Check to see if what got hit has a HealthBehavior
+        HealthBehavior otherHealth = other.GetComponent<HealthBehavior>();
+        //If it does, deal damage to it
+        if (otherHealth)
+        {
+            otherHealth.TakeDamage();
+
+            //Decrement the Pierce
+            _hitsLeft--;
+            //If the pierce has reached zero, destroy itself
+            if (_hitsLeft < 0)
+                Destroy(gameObject);
+
+            //Check to see if other is a bug
+            //If it is then make it flee
+        }
+
+        ////If the object has a HealthBehavior
+        //if (other.TryGetComponent(out HealthBehavior otherHealthBehavior))
+        //    //If the object this collided with is not the owner, deal damage to it
+        //    if (other != Owner)
+        //        otherHealthBehavior.TakeDamage(_damage);
     }
 }

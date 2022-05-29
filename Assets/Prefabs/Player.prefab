@@ -27,7 +27,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7432810150558775554}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0.19026625}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 0.5, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -68,7 +68,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _projectile: {fileID: 7911762374222649932, guid: c1979d8966bd67e4385fb1074ced5d41, type: 3}
-  _duration: 0.15
+  _duration: 0.25
   _speed: 24
   _cooldown: 0.5
   _timeSinceFire: 10
@@ -231,7 +231,6 @@ MonoBehaviour:
   _currentHealth: 0
   _maxHealth: 20
   _isPlayer: 1
-  _invincibilityTime: 10
 --- !u!54 &7432810151818813403
 Rigidbody:
   m_ObjectHideFlags: 0
