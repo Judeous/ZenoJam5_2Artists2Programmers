@@ -10,7 +10,7 @@ public class HealthBehavior : MonoBehaviour
     [SerializeField] private bool _isPlayer = false;
     private PlayerManagerBehavior _playerManager;
 
-    [SerializeField] private float _invincibilityTime = 10;
+    private float _invincibilityTime = 0.25f;
     private float _timeSinceDamaged = 0;
 
     // Start is called before the first frame update
@@ -29,6 +29,20 @@ public class HealthBehavior : MonoBehaviour
     void Update()
     {
         _timeSinceDamaged += Time.deltaTime;
+
+        if (!_isPlayer && _currentHealth <= 0)
+        {
+            //If this is a bug, make it flee
+            EnemyJuneBugMovementBehavior behavior = GetComponent<EnemyJuneBugMovementBehavior>();
+            if (behavior)
+                behavior.Fleeing = true;
+
+            //Lower the scale of the gameObject
+            gameObject.transform.localScale *= 0.99f;
+            //If it gets low enough, destroy it
+            if (gameObject.transform.localScale.magnitude < 0.10f)
+                Destroy(gameObject);
+        }
     }
 
     public void TakeDamage(int value = 1)
@@ -52,7 +66,10 @@ public class HealthBehavior : MonoBehaviour
                 else
                 {
                     //May replace with making it flee, depending on whether this is an enemy or not and the artist wants it to flee
-                    Destroy(gameObject);
+                    EnemyJuneBugMovementBehavior behavior = GetComponent<EnemyJuneBugMovementBehavior>();
+                    if (behavior)
+                        behavior.Fleeing = true;
+                    //Destroy(gameObject);
                 }
             }
         }
