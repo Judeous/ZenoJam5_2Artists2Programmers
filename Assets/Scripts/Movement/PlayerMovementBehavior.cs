@@ -8,6 +8,11 @@ public class PlayerMovementBehavior : MonoBehaviour
     private Vector3 _velocity;
     [SerializeField] public float MovementSpeed = 1;
 
+    public Vector3 Velocity
+    {
+        get { return _velocity; }
+    }
+
     // Start is called before the first frame update
     void Start()
     {
