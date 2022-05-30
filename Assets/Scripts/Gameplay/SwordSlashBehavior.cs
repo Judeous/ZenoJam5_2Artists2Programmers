@@ -7,6 +7,7 @@ public class SwordSlashBehavior : MonoBehaviour
     private float _duration = 0.75f;
     private int _hitsLeft;
     private Rigidbody _rigidbody;
+    private float _rotation;
 
     public Rigidbody Rigidbody
     {
@@ -40,8 +41,9 @@ public class SwordSlashBehavior : MonoBehaviour
         //If the duration reached zero, destroy itself
         if (_duration < 0) { Destroy(gameObject); }
 
-        //Face the direction it's moving in
-        transform.forward = _rigidbody.velocity;
+        //Rotate
+        _rotation += 4;
+        transform.rotation = Quaternion.Euler(0, _rotation, 0);
     }
 
     private void OnTriggerEnter(Collider other)
