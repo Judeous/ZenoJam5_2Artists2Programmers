@@ -28,26 +28,36 @@ public class EnemyJuneBugMovementBehavior : MonoBehaviour
         //Calculate the direction to the target
         Vector3 toTarget = _target.transform.position - transform.position;
 
-        //If not fleeing, add velocity towards the target
-        //Otherwise, add velocity away from the target
-        Vector3 force = _fleeing ? toTarget * -_speed : toTarget * _speed;
-        force.y += 1.1f;
-        //Normalize the movement so they don't move at light speed
-        force *= Time.deltaTime;
-        //Add the force to the rigidbody
-        _rigidbody.AddForce(force, ForceMode.Acceleration);
-
-        if (_fleeing)
+        //Create a ray that starts at a screen point
+        RaycastHit hit;
+        Ray ray = new Ray(transform.position, toTarget);
+        Debug.DrawRay(transform.position, toTarget);
+        //Checks to see if the ray hits something that is not a Maze and not a Bug
+        if (Physics.Raycast(ray, out hit) && !hit.collider.CompareTag("Maze") && !hit.collider.CompareTag("Bug"))
         {
-            //Increment the timer
-            _currentTimeSinceFleeing += Time.deltaTime;
-            //If the time fleeing has reached the max
-            if (_currentTimeSinceFleeing > _maxTimeFleeing)
+            //If not fleeing, add velocity towards the target
+            //Otherwise, add velocity away from the target
+            Vector3 force = _fleeing ? toTarget * -_speed : toTarget * _speed;
+            force.y += 1.1f;
+            //Normalize the movement so they don't move at light speed
+            force *= Time.deltaTime;
+            //Add the force to the rigidbody
+            _rigidbody.AddForce(force, ForceMode.Acceleration);
+
+            if (_fleeing)
             {
-                //Set fleeing to false and reset the timer
-                _fleeing = false;
-                _currentTimeSinceFleeing = 0;
+                //Increment the timer
+                _currentTimeSinceFleeing += Time.deltaTime;
+                //If the time fleeing has reached the max
+                if (_currentTimeSinceFleeing > _maxTimeFleeing)
+                {
+                    //Set fleeing to false and reset the timer
+                    _fleeing = false;
+                    _currentTimeSinceFleeing = 0;
+                }
             }
         }
+
+
     }
 }

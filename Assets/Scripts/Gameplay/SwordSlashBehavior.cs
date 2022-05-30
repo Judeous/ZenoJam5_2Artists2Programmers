@@ -30,6 +30,7 @@ public class SwordSlashBehavior : MonoBehaviour
     void Start()
     {
         _rigidbody = GetComponent<Rigidbody>();
+        _rotation = Random.Range(0, 359);
     }
 
     // Update is called once per frame
