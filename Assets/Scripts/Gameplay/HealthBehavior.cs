@@ -7,6 +7,10 @@ public class HealthBehavior : MonoBehaviour
     [SerializeField] private int _currentHealth;
     [SerializeField] private int _maxHealth = 20;
 
+    private bool _outOfBounds = false;
+
+    private Rigidbody _rigidbody;
+
     [SerializeField] private bool _isPlayer = false;
     private PlayerManagerBehavior _playerManager;
 
@@ -23,6 +27,10 @@ public class HealthBehavior : MonoBehaviour
         {
             _playerManager = GetComponent<PlayerManagerBehavior>();
         }
+        else
+        {
+            _rigidbody = GetComponent<Rigidbody>();
+        }
     }
 
     // Update is called once per frame
@@ -30,7 +38,12 @@ public class HealthBehavior : MonoBehaviour
     {
         _timeSinceDamaged += Time.deltaTime;
 
-        if (!_isPlayer && _currentHealth <= 0)
+        if (transform.position.y > 7 || transform.position.y < 0)
+        {
+            _outOfBounds = true;
+        }
+
+        if (!_isPlayer && _currentHealth <= 0 || _outOfBounds)
         {
             //If this is a bug, make it flee
             EnemyJuneBugMovementBehavior behavior = GetComponent<EnemyJuneBugMovementBehavior>();
@@ -53,6 +66,17 @@ public class HealthBehavior : MonoBehaviour
             _currentHealth -= value;
             _timeSinceDamaged = 0;
 
+            //If this is not the player
+            if (!_isPlayer)
+            {
+                //Calculate a random amount of vertical force to apply 
+                float randomForce = Random.Range(7, 14) + (_rigidbody.velocity.magnitude / 2);
+                //Divide the velocity to add oomph to the hit
+                _rigidbody.velocity /= 4;
+                //Add the vertical velocity
+                _rigidbody.AddForce(new Vector3(0, randomForce, 0), ForceMode.Impulse);
+            }
+
             //If health has dropped to or below zero
             if (_currentHealth <= 0)
             {
@@ -65,7 +89,7 @@ public class HealthBehavior : MonoBehaviour
                 }
                 else
                 {
-                    //May replace with making it flee, depending on whether this is an enemy or not and the artist wants it to flee
+                    //Make the enemy flee temporarily
                     EnemyJuneBugMovementBehavior behavior = GetComponent<EnemyJuneBugMovementBehavior>();
                     if (behavior)
                         behavior.Fleeing = true;

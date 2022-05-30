@@ -25,8 +25,5 @@ public class CameraMovementBehavior : MonoBehaviour
 
         //Lerp to target position
         transform.position = Vector3.Lerp(transform.position, targetPosition, 0.05f);
-
-        //Move to the target position
-        //transform.position = targetPosition;
     }
 }

@@ -47,8 +47,9 @@ public class SlashSpawnerBehavior : MonoBehaviour
         //If the cursor hit something
         if (Physics.Raycast(ray, out RaycastHit hit))
         {
+            Vector3 point = ray.GetPoint(13);
             //Get a vector from the current position to the hit position
-            direction = new Vector3(hit.point.x - transform.position.x, 0, hit.point.z - transform.position.z).normalized;
+            direction = new Vector3(point.x - transform.position.x, 0, point.z - transform.position.z).normalized;
         }
         else
         {

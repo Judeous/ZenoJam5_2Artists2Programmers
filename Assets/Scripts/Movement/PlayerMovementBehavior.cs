@@ -48,8 +48,9 @@ public class PlayerMovementBehavior : MonoBehaviour
         //Checks to see if the ray hits any object in the world
         if (Physics.Raycast(ray, out hit))
         {
+            Vector3 point = ray.GetPoint(13);
             //Find the direction the player should look towards
-            Vector3 lookDir = new Vector3(hit.point.x, transform.position.y, hit.point.z) - transform.position;
+            Vector3 lookDir = new Vector3(point.x, transform.position.y, point.z) - transform.position;
             //Create a rotation from the player's forward to the look direction
             Quaternion rotation = Quaternion.LookRotation(lookDir);
             //Set the rotation to be the new rotation found
