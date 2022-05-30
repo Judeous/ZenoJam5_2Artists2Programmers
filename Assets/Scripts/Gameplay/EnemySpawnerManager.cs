@@ -7,7 +7,11 @@ public class EnemySpawnerManager : MonoBehaviour
     [Tooltip("The maximum range the player can be at before the this spawner activates")]
     public float RangeToStart = 5;
     private bool _active = false;
+    private bool _complete = false;
     private bool _manuallyDeactivated = false;
+
+    [SerializeField] private Light _light;
+    private float _lightIntensity;
 
     public bool Active
     {
@@ -60,12 +64,14 @@ public class EnemySpawnerManager : MonoBehaviour
     void Update()
     {
         //If the spawner has been activated and there are still more to spawn
-        if (_active && _totalToSpawn > 0)
+        if (!_complete && _active)
         {
             //If in a wave
             if (_inWave)
             {
                 //Debug.Log("In Wave");
+                //Increase Light intensity
+                _lightIntensity = 0.75f;
                 //Do wave stuff
                 InWave();
             }
@@ -73,6 +79,8 @@ public class EnemySpawnerManager : MonoBehaviour
             else
             {
                 //Debug.Log("Out of Wave");
+                //Lower Light intensity
+                _lightIntensity = 0.25f;
                 //Do out of wave stuff
                 OutOfWave();
             }
@@ -80,7 +88,7 @@ public class EnemySpawnerManager : MonoBehaviour
         //If the spawner has not been activated and has not been manually deactivated
         else if (!_manuallyDeactivated)
         {
-            //Debug.Log("Spawner Not Active");
+            _lightIntensity = 0.25f;
             //If the distance to the player is lower than the activation range
             if ((_target.transform.position - transform.position).magnitude < RangeToStart)
             {
@@ -89,6 +97,8 @@ public class EnemySpawnerManager : MonoBehaviour
                 _active = true;
             }
         }
+
+        _light.intensity = _lightIntensity;
     }
 
     private void InWave()
@@ -111,8 +121,13 @@ public class EnemySpawnerManager : MonoBehaviour
             //Spawn a bug at the position
             _spawnerBehavior.SpawnEnemy(_enemy, locationToSpawn.position, _target, flee);
 
-            //Decrement total count, reset the counter, and get a random delay for the next spawn
+            //Decrement total count
             _totalToSpawn--;
+            if (_totalToSpawn <= 0)
+            {
+                _active = false;
+            }
+            //Reset the counter, and get a random delay for the next spawn
             _timeSinceSpawn = 0;
             _timeUntilNextSpawn = Random.Range(_minDelayBetweenSpawns, _maxDelayBetweenSpawns);
         }
