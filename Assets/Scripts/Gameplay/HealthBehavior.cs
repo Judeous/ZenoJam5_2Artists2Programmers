@@ -7,9 +7,6 @@ public class HealthBehavior : MonoBehaviour
     [SerializeField] private int _currentHealth;
     [SerializeField] private int _maxHealth = 20;
 
-    [SerializeField] private bool _slowed = false;
-    private float _slowTime = 5;
-
     [SerializeField] private bool _isPlayer = false;
     private PlayerManagerBehavior _playerManager;
 
@@ -46,19 +43,6 @@ public class HealthBehavior : MonoBehaviour
             if (gameObject.transform.localScale.magnitude < 0.10f)
                 Destroy(gameObject);
         }
-        ////If the player was recently hit
-        //if (_isPlayer && _timeSinceDamaged < _slowTime)
-        //{
-        //    //Slow time for oomph
-        //    Time.timeScale = 0.1f;
-        //    _slowed = true;
-        //}
-        //else
-        //{
-        //    //Resume time at it's normal speed
-        //    Time.timeScale = 1;
-        //    _slowed = false;
-        //}
     }
 
     public void TakeDamage(int value = 1)

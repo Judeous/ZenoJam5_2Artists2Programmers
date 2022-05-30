@@ -18,7 +18,11 @@ public class SlashSpawnerBehavior : MonoBehaviour
     /// <summary>
     /// The Camera to check a raycast hit from to determine the direction to send the slash in
     /// </summary>
-    [SerializeField] private Camera _camera;
+    private Camera _camera;
+    public Camera Camera
+    {
+        set { _camera = value; }
+    }
 
     // Update is called once per frame
     public void Update()

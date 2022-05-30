@@ -23,7 +23,10 @@ public class CameraMovementBehavior : MonoBehaviour
             _player.transform.position.y + 11,
             _player.transform.position.z - 6);
 
+        //Lerp to target position
+        transform.position = Vector3.Lerp(transform.position, targetPosition, 0.05f);
+
         //Move to the target position
-        transform.position = targetPosition;
+        //transform.position = targetPosition;
     }
 }
