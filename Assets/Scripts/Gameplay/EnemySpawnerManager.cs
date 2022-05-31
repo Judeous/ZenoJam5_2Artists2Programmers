@@ -71,7 +71,7 @@ public class EnemySpawnerManager : MonoBehaviour
             {
                 //Debug.Log("In Wave");
                 //Increase Light intensity
-                _lightIntensity = 0.75f;
+                _lightIntensity = 1;
                 //Do wave stuff
                 InWave();
             }
@@ -80,7 +80,7 @@ public class EnemySpawnerManager : MonoBehaviour
             {
                 //Debug.Log("Out of Wave");
                 //Lower Light intensity
-                _lightIntensity = 0.25f;
+                _lightIntensity = 0.55f;
                 //Do out of wave stuff
                 OutOfWave();
             }
