@@ -38,20 +38,25 @@ public class HealthBehavior : MonoBehaviour
     {
         _timeSinceDamaged += Time.deltaTime;
 
+        //If this character is out of bounds
         if (transform.position.y > 7 || transform.position.y < 0)
         {
             _outOfBounds = true;
         }
 
+        //If this is a bug and should be dead or if this is out of bounds
         if (!_isPlayer && _currentHealth <= 0 || _outOfBounds)
         {
-            //If this is a bug, make it flee
+            //If this is a june bug, flee
             EnemyJuneBugMovementBehavior behavior = GetComponent<EnemyJuneBugMovementBehavior>();
             if (behavior)
                 behavior.Fleeing = true;
 
+            //Disable collisions
+            _rigidbody.detectCollisions = false;
+
             //Lower the scale of the gameObject
-            gameObject.transform.localScale *= 0.99f;
+            gameObject.transform.localScale *= 0.95f;
             //If it gets low enough, destroy it
             if (gameObject.transform.localScale.magnitude < 0.10f)
                 Destroy(gameObject);
@@ -60,9 +65,10 @@ public class HealthBehavior : MonoBehaviour
 
     public void TakeDamage(int value = 1)
     { 
+        //If the invincibility frames have passed
         if (_timeSinceDamaged > _invincibilityTime)
         {
-            //Lower health
+            //Lower health and reset the timer
             _currentHealth -= value;
             _timeSinceDamaged = 0;
 
@@ -77,24 +83,13 @@ public class HealthBehavior : MonoBehaviour
                 _rigidbody.AddForce(new Vector3(0, randomForce, 0), ForceMode.Impulse);
             }
 
-            //If health has dropped to or below zero
-            if (_currentHealth <= 0)
+            //If health has dropped to or below zero and this is the player
+            if (_currentHealth <= 0 && _isPlayer)
             {
-                if (_isPlayer)
-                {
-                    //Respawn the player with the PlayerManager component
-                    _playerManager.Respawn();
-                    //Restore some health to the player
-                    Heal(10, false, true);
-                }
-                else
-                {
-                    //Make the enemy flee temporarily
-                    EnemyJuneBugMovementBehavior behavior = GetComponent<EnemyJuneBugMovementBehavior>();
-                    if (behavior)
-                        behavior.Fleeing = true;
-                    //Destroy(gameObject);
-                }
+                //Respawn the player with the PlayerManager component
+                _playerManager.Respawn();
+                //Restore some health to the player
+                Heal(10, false, true);
             }
         }
     }

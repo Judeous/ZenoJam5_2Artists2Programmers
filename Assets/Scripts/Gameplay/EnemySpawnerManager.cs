@@ -11,6 +11,7 @@ public class EnemySpawnerManager : MonoBehaviour
     private bool _manuallyDeactivated = false;
 
     [SerializeField] private Light _light;
+    private LightBehavior _lightBehavior;
     private float _lightIntensity;
 
     public bool Active
@@ -58,6 +59,8 @@ public class EnemySpawnerManager : MonoBehaviour
     {
         _spawnerBehavior = _spawner.GetComponent<EnemySpawnerBehavior>();
         _previousSpawnPosition = transform;
+
+        _lightBehavior = _light.GetComponent<LightBehavior>();
     }
 
     // Update is called once per frame
@@ -70,8 +73,6 @@ public class EnemySpawnerManager : MonoBehaviour
             if (_inWave)
             {
                 //Debug.Log("In Wave");
-                //Increase Light intensity
-                _lightIntensity = 0.75f;
                 //Do wave stuff
                 InWave();
             }
@@ -79,8 +80,6 @@ public class EnemySpawnerManager : MonoBehaviour
             else
             {
                 //Debug.Log("Out of Wave");
-                //Lower Light intensity
-                _lightIntensity = 0.25f;
                 //Do out of wave stuff
                 OutOfWave();
             }
@@ -95,6 +94,7 @@ public class EnemySpawnerManager : MonoBehaviour
                 //Debug.Log("Spawner Activated");
                 //Activate the spawner
                 _active = true;
+                _lightBehavior.Active = true;
             }
         }
 
@@ -104,6 +104,8 @@ public class EnemySpawnerManager : MonoBehaviour
     private void InWave()
     {
         _timeSinceSpawn += Time.deltaTime;
+        //Increase Light intensity
+        _lightBehavior.InWave = true;
 
         if (_timeSinceSpawn > _timeUntilNextSpawn)
         {
@@ -125,7 +127,10 @@ public class EnemySpawnerManager : MonoBehaviour
             _totalToSpawn--;
             if (_totalToSpawn <= 0)
             {
+                _lightBehavior.Active = false;
+                _lightBehavior.Disabling = true;
                 _active = false;
+                _complete = true;
             }
             //Reset the counter, and get a random delay for the next spawn
             _timeSinceSpawn = 0;
@@ -143,6 +148,8 @@ public class EnemySpawnerManager : MonoBehaviour
 
     private void OutOfWave()
     {
+        //Lower Light intensity
+        _lightBehavior.InWave = false;
         //Increment counters and swap to being in a wave if the wave duration is up
         _timeSinceWaveEnd += Time.deltaTime;
         if (_timeSinceWaveEnd > _delayBetweenWaves)

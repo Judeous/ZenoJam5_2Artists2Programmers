@@ -7,6 +7,7 @@ public class PlayerManagerBehavior : MonoBehaviour
     [SerializeField] private Camera _camera;
     [SerializeField] private Transform respawnPosition;
     [SerializeField] private SlashSpawnerBehavior _slashSpawnerBehavior;
+    private InputEventBehavior _inputEventBehavior;
     private HealthBehavior _healthBehavior;
     private PlayerMovementBehavior _movementBehavior;
 
@@ -15,8 +16,10 @@ public class PlayerManagerBehavior : MonoBehaviour
     {
         _healthBehavior = GetComponent<HealthBehavior>();
         _movementBehavior = GetComponent<PlayerMovementBehavior>();
+        _inputEventBehavior = GetComponent<InputEventBehavior>();
         _movementBehavior.Camera = _camera;
         _slashSpawnerBehavior.Camera = _camera;
+        _inputEventBehavior.Camera = _camera;
     }
 
     // Update is called once per frame

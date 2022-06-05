@@ -20,6 +20,12 @@ public class EnemyJuneBugMovementBehavior : MonoBehaviour
     void Start()
     {
         _rigidbody = GetComponent<Rigidbody>();
+        //if target is null
+        if (!_target)
+        {
+            //Destroy itself
+            Destroy(gameObject);
+        }
     }
 
     // Update is called once per frame
