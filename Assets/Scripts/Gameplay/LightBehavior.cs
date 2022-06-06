@@ -1,14 +1,15 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class LightBehavior : MonoBehaviour
 {
     private Light _light;
+
     private float _inWaveIntensity = 0.9f;
     private float _outWaveIntensity = 0.65f;
-    private float _idleIntensity = 0.5f;
-    private bool _disabling;
+    private float _idleIntensity = 0.4f;
+    private float _fadeSpeed = 0.01f;
+
+    private bool _disabling = false;
     private bool _inWave = false;
     private bool _activated = false;
 
@@ -37,19 +38,20 @@ public class LightBehavior : MonoBehaviour
     void Start()
     {
         _light = GetComponent<Light>();
+        _light.intensity = _idleIntensity;
     }
 
     // Update is called once per frame
     void Update()
     {
-        //If the light has been activated
-        if (_activated)
+        //If the light is not being disabled, and has been activated
+        if (!_disabling && _activated)
         {
             //If in a wave and the intensity is less than the inWave intensity
             if (_inWave && _light.intensity < _inWaveIntensity)
             {
                 //Raise the light intensity, and clamp it to the inWave intensity
-                _light.intensity += 0.05f;
+                _light.intensity += _fadeSpeed;
                 if (_light.intensity > _inWaveIntensity)
                     _light.intensity = _inWaveIntensity;
             }
@@ -57,7 +59,7 @@ public class LightBehavior : MonoBehaviour
             else if (_light.intensity > _outWaveIntensity)
             {
                 //Lower the light intensity, and clamp it to the outWave intensity
-                _light.intensity -= 0.05f;
+                _light.intensity -= _fadeSpeed;
                 if (_light.intensity < _outWaveIntensity)
                     _light.intensity = _outWaveIntensity;
             }
@@ -66,13 +68,9 @@ public class LightBehavior : MonoBehaviour
         else if (_disabling && _light.intensity > 0)
         {
             //Lower the intensity, and clamp it to zero
-            _light.intensity -= 0.5f;
+            _light.intensity -= _fadeSpeed;
             if (_light.intensity < 0)
                 _light.intensity = 0;
-        }
-        else
-        {
-            _light.intensity = _idleIntensity;
         }
     }
 }
