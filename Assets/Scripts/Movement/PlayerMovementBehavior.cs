@@ -66,9 +66,6 @@ public class PlayerMovementBehavior : MonoBehaviour
 
             ////Lerp to the new rotation
             _rigidbody.rotation = Quaternion.Lerp(_rigidbody.rotation, rotation, 0.15f);
-
-            //Set the player's rotation to be the new calculated rotation
-            //_rigidbody.MoveRotation(rotation);
         }
         //If moving by touch
         else
@@ -95,16 +92,6 @@ public class PlayerMovementBehavior : MonoBehaviour
 
             //Set touchMoving to false to prevent sliding in the this touch direction after input stops
             _touchMoving = false;
-        }
-
-
-        //Checks to see if the ray hits any object in the world
-        if (true)
-        {
-
-        }
-        else
-        {
         }
     }
 }
