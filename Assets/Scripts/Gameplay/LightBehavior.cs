@@ -4,9 +4,10 @@ public class LightBehavior : MonoBehaviour
 {
     private Light _light;
 
-    private float _inWaveIntensity = 0.9f;
-    private float _outWaveIntensity = 0.65f;
     private float _idleIntensity = 0.4f;
+    private float _inWaveIntensity = 0.9f;
+    private float _outWaveIntensity = 0.5f;
+
     private float _fadeSpeed = 0.01f;
 
     private bool _disabling = false;

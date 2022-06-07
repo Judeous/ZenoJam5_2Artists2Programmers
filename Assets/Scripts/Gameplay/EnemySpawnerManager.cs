@@ -33,17 +33,18 @@ public class EnemySpawnerManager : MonoBehaviour
     private Transform _previousSpawnPosition;
 
     //Wave occurance variables
+    private int _amountSpawnedInCurrentWave;
     private bool _inWave = true;
     [Tooltip("The duration of a wave before pausing spawning")]
-    private float _waveDuration;
+    [SerializeField] private float _waveDuration;
     [Tooltip("The length of the pause between waves")]
-    private float _calmDuration;
+    [SerializeField] private float _calmDuration;
 
     //Wave variables
     [Tooltip("The maximum delay between two enemy spawns")]
-    private float _minDelayBetweenSpawns;
+    private float _minDelayBetweenSpawns = 0.1f;
     [Tooltip("The minimum delay between two enemy spawns")]
-    private float _maxDelayBetweenSpawns;
+    private float _maxDelayBetweenSpawns = 1;
     private float _timeUntilNextSpawn;
 
     
@@ -84,9 +85,10 @@ public class EnemySpawnerManager : MonoBehaviour
             if ((_target.transform.position - transform.position).magnitude < RangeToStart)
             {
                 //Debug.Log("Spawner Activated");
-                //Activate the spawner
+                //Activate the spawner and light
                 _active = true;
                 _lightBehavior.Active = true;
+                _lightBehavior.InWave = true;
             }
         }
         //If the spawner is finished
@@ -119,6 +121,7 @@ public class EnemySpawnerManager : MonoBehaviour
 
             //Spawn a bug at the position
             _spawnerBehavior.SpawnEnemy(_enemy, locationToSpawn.position, _target, flee);
+            _amountSpawnedInCurrentWave++;
 
             //Decrement total count
             _totalToSpawn--;
@@ -134,32 +137,49 @@ public class EnemySpawnerManager : MonoBehaviour
                 _timeUntilNextSpawn = Random.Range(_minDelayBetweenSpawns, _maxDelayBetweenSpawns);
             }
         }
-
-        //Increase Light intensity
-        _lightBehavior.InWave = true;
-        //Decrement timer and swap to being out of a wave if the wave duration is up
+        //Decrement timer and exit wave if the wave duration is up
         _waveDuration -= Time.deltaTime;
         if (_waveDuration <= 0)
         {
-            _inWave = false;
-            //Reset timer for next wave duration
-            _waveDuration = Random.Range(.25f, 1.25f);
+            ExitWave();
         }
     }
 
     private void OutOfWave()
     {
-        //Lower Light intensity
-        _lightBehavior.InWave = false;
-        //Decrement timer and swap to being in a wave if the time is up
+        //Decrement timer
         _calmDuration -= Time.deltaTime;
+
+        //If there's less than a second before the next wave starts
+        if (_calmDuration < 1)
+        {
+            //Increase Light intensity
+            _lightBehavior.InWave = true;
+        }
+        //Enter a wave if the time is up
         if (_calmDuration <= 0)
         {
-            _inWave = true;
-            //Reset timer for the next calm duration
-            _calmDuration = Random.Range(10, 18);
+            EnterWave();
         }
     }
 
+    private void EnterWave()
+    {
+        _inWave = true;
+        //Set timer for wave duration
+        _waveDuration = Random.Range(.25f, 1.25f);
 
+        //Increase Light intensity
+        _lightBehavior.InWave = true;
+    }
+
+    private void ExitWave()
+    {
+        _inWave = false;
+        //Set timer for calm duration based on how many enemies spawned during the previous wave
+        _calmDuration += _amountSpawnedInCurrentWave + Random.Range(3, 4);
+
+        //Decrease Light intensity
+        _lightBehavior.InWave = false;
+    }
 }
